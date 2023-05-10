@@ -45,6 +45,23 @@ struct DetailView: View {
                     Label(attendee.name, systemImage: "person")
                 }
             }
+            
+            Section(header: Text("History")){
+                if (scrum.history.isEmpty){
+                    Label("No meetings yet", systemImage: "calendar.badge.exclamationmark")
+                }
+                ForEach(scrum.history) { history in
+                    NavigationLink(destination: HistoryView(history: history)){
+                        HStack{
+                            Image(systemName: "calendar")
+                            Text(history.date, style: .date)
+                        }
+                    }
+                   
+                }
+                
+                
+            }
         }
         .navigationTitle(scrum.title)
         .toolbar{
@@ -54,9 +71,9 @@ struct DetailView: View {
             }
         }
         .sheet(isPresented: $isPresentingEditView){
-            NavigationView{
+            NavigationStack{
                 DetailEditView(data: $editingScrum)
-                    .navigationTitle("Edit")
+                    .navigationTitle(scrum.title)
                     .toolbar{
                         ToolbarItem(placement: .cancellationAction){
                             Button("Cancel"){
@@ -66,7 +83,7 @@ struct DetailView: View {
                         ToolbarItem(placement: .confirmationAction){
                             Button("Done"){
                                 isPresentingEditView = false
-                                scrum.update(from : data)
+                                scrum = editingScrum
                             }
                         }
                     }
@@ -79,7 +96,7 @@ struct DetailView: View {
 
 struct DetailView_Previews: PreviewProvider {
     static var previews: some View{
-        NavigationView{
+        NavigationStack{
             DetailView(scrum: .constant(DailyScrum.sampleData[0]))
         }
     }

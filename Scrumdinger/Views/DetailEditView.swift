@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct DetailEditView: View{
-    @Binding var data : DailyScrum.Data
+    @Binding var data : DailyScrum
     @State private var newAttendeeName = ""
     
     var body: some View{
@@ -16,7 +16,7 @@ struct DetailEditView: View{
             Section(header: Text("Meeting Info")){
                 TextField("Title", text: $data.title)
                 HStack{
-                    Slider(value: $data.lengthInMinutes){
+                    Slider(value: $data.lengthInMinutesAsDouble, in:5...30, step:1){
                         Text("Length")
                     }.accessibilityValue("\(Int(data.lengthInMinutes)) minutes")
                     Spacer()
@@ -24,7 +24,6 @@ struct DetailEditView: View{
                 }
             }
             ThemePicker(selection: $data.theme)
-            
             Section(header: Text("Attendees")){
                 ForEach(data.attendees){ attende in
                     Text(attende.name)
@@ -52,6 +51,6 @@ struct DetailEditView: View{
 
 struct DetailEditView_Previews: PreviewProvider{
     static var previews: some View {
-        DetailEditView(data: .constant(DailyScrum.sampleData[0].data))
+        DetailEditView(data: .constant(DailyScrum.sampleData[0]))
     }
 }
